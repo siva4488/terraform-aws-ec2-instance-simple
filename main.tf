@@ -16,7 +16,7 @@ resource "aws_instance" "simple" {
   tags = "${merge(
       var.tags,
       map(
-        "Name", "format("%s-%d", var.name, count.index + 1)"
+        "Name", format("%s-%d", var.name_prefix, count.index + 1)
       )
     )}"
 }

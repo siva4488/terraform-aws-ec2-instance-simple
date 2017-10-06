@@ -1,3 +1,21 @@
+provider "aws" {
+  profile = "lab"
+  region = "eu-central-1"
+}
+
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnet_ids" "all" {
+  vpc_id = "${data.aws_vpc.default.id}"
+}
+
+data "aws_security_group" "default" {
+  vpc_id = "${data.aws_vpc.default.id}"
+  name   = "default"
+}
+
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
@@ -17,9 +35,10 @@ data "aws_ami" "amazon_linux" {
 }
 
 module "myfleet" {
-  source = "trung/ec2-instance-simple/aws"
+  // source = "trung/ec2-instance-simple/aws"
+  source = "../.."
 
-  count         = "2"
+  count         = "4"
   ami           = "${data.aws_ami.amazon_linux.id}"
   instance_type = "t2.micro"
   name_prefix   = "myfleet"
@@ -29,11 +48,11 @@ module "myfleet" {
   }
 
   network_configuration = {
-    subnet_ids = ""
+    subnet_ids = ["${data.aws_subnet_ids.all.ids}"]
   }
 
-  security_configuration = {
-    security_group_ids   = ""
-    iam_instance_profile = ""
-  }
+  security_configuration = "${map(
+    "security_group_ids", data.aws_security_group.default.id,
+    "iam_instance_profile", ""
+  )}"
 }

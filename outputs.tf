@@ -1,3 +1,3 @@
 output "private_ips" {
-  value = ""
+  value = "${aws_instance.simple.*.private_ip}"
 }
