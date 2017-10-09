@@ -47,9 +47,10 @@ module "myfleet" {
     Foo = "bar"
   }
 
-  network_configuration = {
-    subnet_ids = ["${data.aws_subnet_ids.all.ids}"]
-  }
+  network_configuration = "${map(
+    "subnet_ids", join(",", data.aws_subnet_ids.all.ids),
+    "enable_public", "true"
+  )}"
 
   security_configuration = "${map(
     "security_group_ids", data.aws_security_group.default.id,

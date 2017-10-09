@@ -18,7 +18,7 @@ variable "ami" {
 
 variable "network_configuration" {
   type        = "map"
-  description = "Network configuration (subnet_ids) used when provisioning EC2 instance(s)"
+  description = "Network configuration (enable_public, subnet_ids) used when provisioning EC2 instance(s)"
 }
 
 variable "security_configuration" {
